@@ -54,18 +54,24 @@ struct ProductFilter {
 ///////////////////////////////////////////////////////////////
 //      implementation follows Open-Closed Principle         //
 ///////////////////////////////////////////////////////////////
+template <typename T> struct AndSpecification;
+
 template <typename T> struct Specification {
   virtual bool is_satisfied(T *item) const = 0;
+  AndSpecification<T> operator&&(const Specification<T> &other) {
+    std::cout << "internal && called." << std::endl;
+    return {*this, other};
+  }
 };
 
 template <typename T> struct Filter {
   virtual std::vector<T *> filter(std::vector<T *> items,
-                                  Specification<T> &spec) = 0;
+                                  const Specification<T> &spec) = 0;
 };
 
 struct BetterFilter : Filter<Product> {
   std::vector<Product *> filter(std::vector<Product *> items,
-                                Specification<Product> &spec) {
+                                const Specification<Product> &spec) {
     std::vector<Product *> result;
     for (auto *item : items) {
       if (spec.is_satisfied(item)) {
@@ -86,6 +92,13 @@ template <typename T> struct AndSpecification : Specification<T> {
   const Specification<T> &first;
   const Specification<T> &second;
 };
+
+template <typename T>
+AndSpecification<T> operator&&(const Specification<T> &first,
+                               const Specification<T> &second) {
+  std::cout << "external && called." << std::endl;
+  return {first, second};
+}
 
 struct ColorSpecification : Specification<Product> {
   explicit ColorSpecification(const Color c) : color(c) {}
@@ -118,10 +131,13 @@ int main() {
 
   ColorSpecification green(Color::Green);
   SizeSpecification large(Size::Large);
-  AndSpecification<Product> green_and_large{green, large};
   auto green_things = bf.filter(all, green);
   auto large_things = bf.filter(all, large);
-  auto green_and_large_things = bf.filter(all, green_and_large);
+  // AndSpecification<Product> green_and_large{green, large};
+  // auto green_and_large= ColorSpecification(Color::Green) &&
+  // SizeSpecification(Size::Large); auto green_and_large = green && large; auto
+  // green_and_large_things = bf.filter(all, green_and_large);
+  auto green_and_large_things = bf.filter(all, green && large);
 
   print_helper(green_things, "green");
   print_helper(large_things, "large");
