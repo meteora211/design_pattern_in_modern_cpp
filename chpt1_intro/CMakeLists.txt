@@ -9,7 +9,9 @@ foreach(source_file ${SOURCE_FILES})
       CXX_EXTENSIONS NO
       # COMPILE_FLAGS "-Wall"
   )
-  # target_link_libraries(${executable_name} libs)
+  if (${source_file} MATCHES "Dip.cc")
+    target_link_libraries(${executable_name} PRIVATE Boost.DI)
+  endif()
 
   install(TARGETS ${executable_name} DESTINATION ${INSTALL_BIN_DIR})
 

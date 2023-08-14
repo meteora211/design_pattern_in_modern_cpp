@@ -7,4 +7,14 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 set(INSTALL_BIN_DIR ${PROJECT_SOURCE_DIR}/bin)
 set(MATMUL_INSTALL_LIB_DIR ${PROJECT_SOURCE_DIR}/lib)
 
+include(FetchContent)
+FetchContent_Declare(
+  di
+  GIT_REPOSITORY https://github.com/boost-ext/di
+  GIT_TAG v1.3.0 
+  GIT_SHALLOW TRUE
+  GIT_PROGRESS TRUE
+)
+FetchContent_MakeAvailable(di)
+
 add_subdirectory(chpt1_intro)
