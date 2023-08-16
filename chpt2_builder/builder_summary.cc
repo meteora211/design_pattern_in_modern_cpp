@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <memory>
+#include <concepts>
 
 using namespace std;
 
@@ -74,10 +76,47 @@ private:
   std::shared_ptr<Builder> builder;
 };
 
+// TODO: 👿 not sure how to implement it with concept
+// template<typename T, typename Product>
+// concept BuilderInterface = requires(T t) {
+//   t.set_seats(int{});
+//   t.set_engine(std::string{});
+//   t.get_result() -> std::unique_ptr<Product>;
+// };
+
+// template<typename Product>
+// class BuilderImpl {
+// public:
+//   BuilderImpl() : product(std::make_unique<Product>()) {}
+//   void set_seats(int number) {
+//     std::cout << "BuilderImpl set seats: " << number << std::endl;
+//     product->seats = number;
+//   }
+//   void set_engine(std::string engine) {
+//     std::cout << "BuilderImpl set engine: " << engine << std::endl;
+//     product->engine = engine;
+//   }
+//   std::unique_ptr<Product> get_result() {
+//     return std::move(product);
+//   }
+// private:
+//   std::unique_ptr<Product> product;
+// };
+
+// template<template<typename> BuilderInterface BImpl, typename Product >
+// template<typename Product> requires BuilderInterface<Product>
+// void build_interface(BImpl<Product> builder) {
+//   builder.set_seats(4);
+//   builder.set_engine("motor");
+// }
+
 int main() {
   auto builder = std::make_shared<CarBuilder>();
   auto director = Director();
   director.set_builder(builder);
   director.build();
   auto car = builder->get_result();
+
+  // auto car_builder = BuilderImpl<Manual>();
+  // build_interface(car_builder)
 }

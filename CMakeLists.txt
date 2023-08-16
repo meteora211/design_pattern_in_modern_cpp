@@ -19,3 +19,4 @@ FetchContent_MakeAvailable(di)
 
 add_subdirectory(chpt1_intro)
 add_subdirectory(chpt2_builder)
+add_subdirectory(chpt3_factory)
