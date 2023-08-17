@@ -78,10 +78,11 @@ private:
 
 // TODO: 👿 not sure how to implement it with concept
 // template<typename T, typename Product>
+// template<typename T>
 // concept BuilderInterface = requires(T t) {
 //   t.set_seats(int{});
 //   t.set_engine(std::string{});
-//   t.get_result() -> std::unique_ptr<Product>;
+//   // t.get_result();
 // };
 
 // template<typename Product>
@@ -103,9 +104,8 @@ private:
 //   std::unique_ptr<Product> product;
 // };
 
-// template<template<typename> BuilderInterface BImpl, typename Product >
-// template<typename Product> requires BuilderInterface<Product>
-// void build_interface(BImpl<Product> builder) {
+// template<typename Product>
+// void build_interface(BuilderImpl<Product> builder) {
 //   builder.set_seats(4);
 //   builder.set_engine("motor");
 // }
