@@ -23,6 +23,23 @@ public:
   int suite;
 };
 
+class ExtendAddress : public Address {
+public:
+  ExtendAddress(const string &street, const string &city, const int suite, const string& country)
+      : Address{street, city, suite}, country{country} {}
+  ExtendAddress(const ExtendAddress &other)
+      : Address(other), country{other.country} {}
+  ExtendAddress &operator=(const ExtendAddress &other) {
+    if (this == &other) {
+      return *this;
+    }
+    Address::operator=(other);
+    country = other.country;
+    return *this;
+  }
+  string country;
+};
+
 class Contact {
 public:
   Contact(string name, unique_ptr<Address> address)
@@ -51,10 +68,38 @@ ostream &operator<<(ostream &os, const Contact &obj) {
             << " suite: " << obj.address->suite;
 }
 
+// Prototype Factory
+class EmployeeFactory {
+  static Contact main;
+  static Contact aux;
+
+  static unique_ptr<Contact> NewEmployee(
+      const string& name, int suite, const Contact& proto) {
+    auto result = make_unique<Contact>(proto);
+    result->name = name;
+    result->address->suite = suite;
+    return result;
+  }
+public:
+  static unique_ptr<Contact> NewMainOfficeEmployee(const string& name, int suite) {
+    return NewEmployee(name, suite, main);
+  }
+  static unique_ptr<Contact> NewAuxOfficeEmployee(const string& name, int suite) {
+    return NewEmployee(name, suite, main);
+  }
+};
+
+Contact EmployeeFactory::main{"", make_unique<Address>("123 East Dr", "London", 0)};
+Contact EmployeeFactory::aux{"", make_unique<Address>("321 East Dr", "London", 0)};
+
 int main() {
+  // XXX: prototype
   Contact worker{"", make_unique<Address>("123 East Dr", "London", 0)};
   auto john = worker;
   john.name = "John";
   john.address->suite = 10;
   cout << john << endl;
+
+  auto jane = EmployeeFactory::NewAuxOfficeEmployee("Jane Doe", 125);
+  cout << *jane << endl;
 }
