@@ -75,6 +75,6 @@ int main() {
   auto clone_r = r->clone();
   clone_r->print();
 
-  PrototypeRegistry<Shape>::instance().set("rectangle", make_shared<Rectangle>(3,2));
-  PrototypeRegistry<Shape>::instance().get("rectangle")->clone()->print();
+  PrototypeRegistry<Shape>::set("rectangle", make_shared<Rectangle>(3,2));
+  PrototypeRegistry<Shape>::get("rectangle")->clone()->print();
 }
